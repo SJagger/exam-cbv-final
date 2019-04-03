@@ -1,0 +1,23 @@
+{% extends "addressbook/base.html" %}
+
+{% block content %}
+{% if messages %}
+	{% for message in messages %}
+		{% if "excel" in message.tags %}
+            <div class="alert alert-{{ message.tags }}">
+                <strong>{{ message|safe }}</strong>
+            </div>
+        {% endif %}
+	{% endfor %}
+{% else %}
+<b>{{ order }}</b>
+{% endif %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <label>Upload a file</label>
+  <input type="file" name="file">
+  <p>Only accepts CSV files</p>
+  <button class="btn btn-success" type="submit">Upload</button>
+  <a href="{% url 'addressbooklist_list' %}" id="cancel" name="cancel" style="color:white;" class="btn btn-warning">Back</a>
+</form>
+{% endblock content %}
