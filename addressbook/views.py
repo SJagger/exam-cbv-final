@@ -3,6 +3,7 @@ import csv
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from braces.views import JsonRequestResponseMixin, AjaxResponseMixin
 from django.contrib import messages
 from django.views.generic import View
 from django.views.generic import ListView
@@ -11,7 +12,7 @@ from django.urls import reverse_lazy
 from .models import AddressBookList
 
 
-class ContactList(LoginRequiredMixin, ListView):
+class ContactList(JsonRequestResponseMixin, AjaxResponseMixin, LoginRequiredMixin, ListView):
     model = AddressBookList
 
     def get_queryset(self):
@@ -21,7 +22,7 @@ class ContactList(LoginRequiredMixin, ListView):
             return None
 
 
-class ContactCreate(LoginRequiredMixin, CreateView):
+class ContactCreate(JsonRequestResponseMixin, AjaxResponseMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super(ContactCreate, self).form_valid(form)
@@ -31,13 +32,13 @@ class ContactCreate(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('addressbooklist_list')
 
 
-class ContactUpdate(LoginRequiredMixin, UpdateView):
+class ContactUpdate(JsonRequestResponseMixin, AjaxResponseMixin, LoginRequiredMixin, UpdateView):
     model = AddressBookList
     fields = ['fname', 'lname', 'cnumber', 'address']
     success_url = reverse_lazy('addressbooklist_list')
 
 
-class ContactDelete(LoginRequiredMixin, DeleteView):
+class ContactDelete(JsonRequestResponseMixin, AjaxResponseMixin, LoginRequiredMixin, DeleteView):
     model = AddressBookList
     success_url = reverse_lazy('addressbooklist_list')
 

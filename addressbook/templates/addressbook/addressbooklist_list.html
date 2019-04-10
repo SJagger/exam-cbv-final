@@ -6,7 +6,7 @@
     margin: 0;
     display: inline-block;
   }
-  #main a {
+  #main p {
     float: right;
   }
   ::-webkit-input-placeholder {
@@ -26,12 +26,18 @@
     <div id="main">
       <h1>Address Book List</h1>
       {% if user.is_authenticated %}
-        <a class="btn btn-primary" href="{% url 'addressbooklist_create' %}">Add</a><br><br>
+      <p>
+        <button type="button" class="btn btn-primary js-create" data-toggle="modal" data-target="#modal-book" data-url="{% url 'addressbooklist_create' %}">
+          Add 
+        </button>
+      </p>
+<!--        <a class="btn btn-primary" href="{% url 'addressbooklist_create' %}">Add</a><br><br>
+-->  
       {% else %}
       {% endif %}
     </div>
     <br>
-    <table class="table table-light">
+    <table class="table table-light" id="book-table">
         <thead>
           <tr>
               <th>First Name</th>
@@ -44,7 +50,7 @@
               {% endif %}
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tbody-tab">
           {% for contact in object_list %}
             <tr>
               <td>{{ contact.fname }}</td>
@@ -53,15 +59,29 @@
               <td>{{ contact.address }}</td>
               {% if user.is_authenticated %}
                 <td>
-                  <a class="btn btn-info" href="{% url 'addressbooklist_update'  contact.id  %}">Update</a>
-                  <a class="btn btn-danger" href="{% url 'addressbooklist_delete' contact.id %}">Delete</a>
+                  <button type="button" class="btn btn-info js-update" data-toggle="modal" data-target="#modal-book" data-url="{% url 'addressbooklist_update' contact.id %}">
+                    Update
+                  </button>
+                  <button type="button" class="btn btn-danger js-delete" data-toggle="modal" data-target="#modal-book" data-url="{% url 'addressbooklist_delete' pk=contact.id %}">
+                    Delete
+                  </button>
                 </td>
               {% else %}
               {% endif %}
             </tr>
+          {% empty %}
+            <tr>
+              <td colspan="9" class="text-center bg-warning">No book</td>
+            </tr>
           {% endfor %}
         </tbody>
     </table>
+    <div class="modal fade" id="modal-book">
+      <div class="modal-dialog">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+
     <a class="btn btn-success" href="/upload-csv/">CSV Import</a><br><br>
     <a class="btn btn-success" href="/download-csv/">CSV Export</a><br><br>
   </div>

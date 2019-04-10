@@ -1,0 +1,18 @@
+{% load crispy_forms_tags %}
+<form method="post" data-url="{% url 'addressbooklist_delete' object.id %}" class="delete-form">
+  {% csrf_token %}
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Address Book List - Confirm Delete </h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body">
+     Are you sure you want to delete <strong>"{{ object.fname }} {{ object.lname }}"</strong> ? 
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </div>
+</form>
+
