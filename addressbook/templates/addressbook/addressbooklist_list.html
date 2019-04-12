@@ -52,13 +52,13 @@
         </thead>
         <tbody id="tbody-tab">
           {% for contact in object_list %}
-            <tr>
+            <tr id="data-{{ contact.pk }}">
               <td>{{ contact.fname }}</td>
               <td>{{ contact.lname }}</td>
               <td>{{ contact.cnumber }}</td>
               <td>{{ contact.address }}</td>
               {% if user.is_authenticated %}
-                <td>
+                <td id="td-btn">
                   <button type="button" class="btn btn-info js-update" data-toggle="modal" data-target="#modal-book" data-url="{% url 'addressbooklist_update' contact.id %}">
                     Update
                   </button>
@@ -68,10 +68,6 @@
                 </td>
               {% else %}
               {% endif %}
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="9" class="text-center bg-warning">No book</td>
             </tr>
           {% endfor %}
         </tbody>

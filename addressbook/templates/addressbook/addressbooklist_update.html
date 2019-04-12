@@ -1,5 +1,5 @@
 {% load crispy_forms_tags %}
-<form method="post" data-url="{% url 'addressbooklist_update' form.instance.id %}" class="update-form">
+<form method="post" action="{% url 'addressbooklist_update' form.instance.id %}" class="update-form">
   {% csrf_token %}
   <div class="modal-header">
     <h5 class="modal-title" id="exampleModalLabel">Address Book List - Update</h5>

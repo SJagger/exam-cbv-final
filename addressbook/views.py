@@ -12,35 +12,79 @@ from django.urls import reverse_lazy
 from .models import AddressBookList
 
 
-class ContactList(JsonRequestResponseMixin, AjaxResponseMixin, LoginRequiredMixin, ListView):
+class ContactList(LoginRequiredMixin, ListView):
     model = AddressBookList
 
     def get_queryset(self):
+        print("====================================")
         if self.request.user.is_authenticated:
             return AddressBookList.objects.filter(author=self.request.user)
         else:
             return None
 
 
-class ContactCreate(JsonRequestResponseMixin, AjaxResponseMixin, LoginRequiredMixin, CreateView):
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super(ContactCreate, self).form_valid(form)
-
+class ContactCreate(LoginRequiredMixin, JsonRequestResponseMixin, AjaxResponseMixin, CreateView):
     model = AddressBookList
     fields = ['fname', 'lname', 'cnumber', 'address']
     success_url = reverse_lazy('addressbooklist_list')
 
+#    def form_valid(self, form):
+#        form.instance.author = self.request.user
+#        print("---------------------------------------")
+#        return super(ContactCreate, self).form_valid(form)
 
-class ContactUpdate(JsonRequestResponseMixin, AjaxResponseMixin, LoginRequiredMixin, UpdateView):
+    def post_ajax(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            form.instance.author = self.request.user
+            form.save()
+            data_pk = form.instance.pk
+            contact = AddressBookList.objects.get(pk=data_pk)
+            return self.render_json_response({
+                "fname": contact.fname,
+                "lname": contact.lname,
+                "cnumber": contact.cnumber,
+                "address": contact.address,
+                "success": True,
+                "message": "Contact added successfully",
+            })
+
+
+class ContactUpdate(LoginRequiredMixin, JsonRequestResponseMixin, AjaxResponseMixin, UpdateView):
     model = AddressBookList
     fields = ['fname', 'lname', 'cnumber', 'address']
     success_url = reverse_lazy('addressbooklist_list')
 
+    def post_ajax(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            form.instance.author = self.request.user
+            form.save()
+            data_pk = form.instance.pk
+            contact = AddressBookList.objects.get(pk=data_pk)
+            return self.render_json_response({
+                "fname": contact.fname,
+                "lname": contact.lname,
+                "cnumber": contact.cnumber,
+                "address": contact.address,
+                "success": True,
+                "message": "Contact updated successfully",
+            })
 
-class ContactDelete(JsonRequestResponseMixin, AjaxResponseMixin, LoginRequiredMixin, DeleteView):
+
+class ContactDelete(LoginRequiredMixin, JsonRequestResponseMixin, AjaxResponseMixin, DeleteView):
     model = AddressBookList
     success_url = reverse_lazy('addressbooklist_list')
+
+    def post_ajax(self, request, *args, **kwargs):
+        data_pk = self.kwargs['pk']
+        if data_pk:
+            AddressBookList.objects.filter(pk=data_pk).delete()
+            return self.render_json_response({
+                "pk": data_pk,
+                "success": True,
+                "message": "Contact deleted successfully",
+            })
 
 
 class CSVImportView(LoginRequiredMixin, View):
