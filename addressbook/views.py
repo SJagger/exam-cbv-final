@@ -28,11 +28,6 @@ class ContactCreate(LoginRequiredMixin, JsonRequestResponseMixin, AjaxResponseMi
     fields = ['fname', 'lname', 'cnumber', 'address']
     success_url = reverse_lazy('addressbooklist_list')
 
-#    def form_valid(self, form):
-#        form.instance.author = self.request.user
-#        print("---------------------------------------")
-#        return super(ContactCreate, self).form_valid(form)
-
     def post_ajax(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
@@ -41,12 +36,15 @@ class ContactCreate(LoginRequiredMixin, JsonRequestResponseMixin, AjaxResponseMi
             data_pk = form.instance.pk
             contact = AddressBookList.objects.get(pk=data_pk)
             return self.render_json_response({
+                "pk": contact.pk,
                 "fname": contact.fname,
                 "lname": contact.lname,
                 "cnumber": contact.cnumber,
                 "address": contact.address,
                 "success": True,
-                "message": "Contact added successfully",
+                "message": "Contact updated successfully",
+                "update_url": "http://127.0.0.1:8000/update_contact/{}".format(data_pk),
+                "delete_url": "http://127.0.0.1:8000/delete_contact/{}".format(data_pk),
             })
 
 
@@ -56,6 +54,7 @@ class ContactUpdate(LoginRequiredMixin, JsonRequestResponseMixin, AjaxResponseMi
     success_url = reverse_lazy('addressbooklist_list')
 
     def post_ajax(self, request, *args, **kwargs):
+        self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
             form.instance.author = self.request.user
@@ -63,12 +62,15 @@ class ContactUpdate(LoginRequiredMixin, JsonRequestResponseMixin, AjaxResponseMi
             data_pk = form.instance.pk
             contact = AddressBookList.objects.get(pk=data_pk)
             return self.render_json_response({
+                "pk": contact.pk,
                 "fname": contact.fname,
                 "lname": contact.lname,
                 "cnumber": contact.cnumber,
                 "address": contact.address,
                 "success": True,
                 "message": "Contact updated successfully",
+                "updateurl": "http://127.0.0.1:8000/delete_contact/{}".format(data_pk),
+                "delete_url": "http://127.0.0.1:8000/delete_contact/{}".format(data_pk),
             })
 
 

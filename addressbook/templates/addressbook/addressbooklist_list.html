@@ -30,13 +30,14 @@
         <button type="button" class="btn btn-primary js-create" data-toggle="modal" data-target="#modal-book" data-url="{% url 'addressbooklist_create' %}">
           Add 
         </button>
+        <a class="btn btn-success" href="/upload-csv/">CSV Import</a> 
+        <a class="btn btn-success" href="/download-csv/">CSV Export</a>
       </p>
-<!--        <a class="btn btn-primary" href="{% url 'addressbooklist_create' %}">Add</a><br><br>
--->  
       {% else %}
       {% endif %}
     </div>
     <br>
+
     <table class="table table-light" id="book-table">
         <thead>
           <tr>
@@ -77,9 +78,6 @@
         <div class="modal-content"></div>
       </div>
     </div>
-
-    <a class="btn btn-success" href="/upload-csv/">CSV Import</a><br><br>
-    <a class="btn btn-success" href="/download-csv/">CSV Export</a><br><br>
   </div>
   <br>
 {% endblock content %}

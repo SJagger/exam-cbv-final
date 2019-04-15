@@ -4,7 +4,6 @@ $(document).ready(function() {
     $.ajax({
       url: btn.attr("data-url"),
       type: 'get',
-      // dataType: 'json',
       beforeSend: function() {
         $('#modal-book').modal('show');
       },
@@ -15,32 +14,46 @@ $(document).ready(function() {
   };
 
   var SaveForm = function(){
-    // event.preventDefault();
     var form = $(this);
     $.ajax({
       url: form.attr("action"),
       data: form.serialize(),
       type: form.attr("method"),
-      // dataType: 'json',
       success: function(data){
-        //alert(data);
         var tabb = $("#tbody-tab");
         if(form.attr("class")=="create-form"){
           data.success
           alert(data.message);
-          var row = "<tr>\
+          var row = "<tr id='data-" + data.pk + "'>\
                           <td>" + data.fname + "</td>\
                           <td>" + data.lname + "</td>\
                           <td>" + data.cnumber + "</td>\
                           <td>" + data.address + "</td>\
-                          <td><button type='button' class='btn btn-info js-update' data-toggle='modal' data-target='#modal-book' data-url='{% url 'addressbooklist_update' " + data.pk + "%}'>\
+                          <td><button type='button' class='btn btn-info js-update' data-toggle='modal' data-target='#modal-book' data-url=" + data.update_url + ">\
                                 Update</button>\
-                              <button type='button' class='btn btn-danger js-delete' data-toggle='modal' data-target='#modal-book' data-url='{% url 'addressbooklist_delete' " + data.pk + "%}'>\
+                              <button type='button' class='btn btn-danger js-delete' data-toggle='modal' data-target='#modal-book' data-url=" + data.delete_url + ">\
                                 Delete</button>\
                           </td>\
                     </tr>";
           tabb.append(row);
           $("#modal-book").modal("hide");
+        }
+        else if(form.attr("class")=="update-form"){
+          data.success
+          alert(data.message);
+          var edited = "<tr id='data-" + data.pk + "'>\
+                          <td>" + data.fname + "</td>\
+                          <td>" + data.lname + "</td>\
+                          <td>" + data.cnumber + "</td>\
+                          <td>" + data.address + "</td>\
+                          <td><button type='button' class='btn btn-info js-update' data-toggle='modal' data-target='#modal-book' data-url=" + data.update_url + ">\
+                                Update</button>\
+                              <button type='button' class='btn btn-danger js-delete' data-toggle='modal' data-target='#modal-book' data-url=" + data.delete_url + ">\
+                                Delete</button>\
+                          </td>\
+                    </tr>";
+          $("#data-" + data.pk).replaceWith(edited);
+          $("#modal-book").modal('hide');
         }
         else if(form.attr("class")=="delete-form"){
           data.success
@@ -55,18 +68,6 @@ $(document).ready(function() {
     });
     return false;
   };
-/*        if(data){
-          $('#book-table tbody').append($(data).find('#tbody-tab').html());
-          $('#modal-book').modal('hide');
-        }
-        else {
-          $('#modal-book .modal-content').html(data);
-        }
-      }
-    })
-    return false;
-  }
-*/
 
 // Create
 $('.js-create').click(ShowForm);
